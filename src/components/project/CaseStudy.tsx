@@ -3,6 +3,7 @@ import type { Lang, Localized } from "@/i18n/config";
 import type { Project } from "@/data/projects";
 import { getDictionary } from "@/i18n/dictionaries";
 import { Media } from "./Media";
+import { CopyValue } from "./CopyValue";
 
 // Sadržaj studije slučaja. Isti se koristi u modalu (chat) i na stranici /projects/[slug],
 // zato nema sopstveni naslov stranice ni margine: to određuje roditelj.
@@ -101,7 +102,28 @@ export function ProjectLinks({ project, lang }: { project: Project; lang: Lang }
           </a>
         ))}
       </div>
-      {links.demo && project.demoNote && <p className="text-xs text-muted">{project.demoNote[lang]}</p>}
+      {links.demo && project.demoNote && (
+        <p className="text-xs text-muted">
+          {project.demoNote[lang]}
+          {project.loginOnRequest && !project.demoLogins?.length ? ` ${t.loginOnRequest}` : ""}
+        </p>
+      )}
+      {links.demo && project.demoLogins?.length ? (
+        <div className="rounded-xl bg-subtle p-4 text-sm">
+          <p className="font-medium">{t.demoLogin}</p>
+          <dl className="mt-2 space-y-3">
+            {project.demoLogins.map((d) => (
+              <div key={d.email}>
+                <dt className="text-xs text-muted">{d.role[lang]}</dt>
+                <dd className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                  <CopyValue value={d.email} label={t.copy} done={t.copied} />
+                  <CopyValue value={d.password} label={t.copy} done={t.copied} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      ) : null}
     </div>
   );
 }

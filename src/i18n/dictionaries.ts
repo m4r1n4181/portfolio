@@ -73,6 +73,10 @@ const en = {
     prev: "Previous projects",
     next: "Next projects",
     noMedia: "Screenshots coming soon.",
+    demoLogin: "Demo login",
+    loginOnRequest: "Login details on request, see Contact.",
+    copy: "Copy",
+    copied: "Copied",
   },
   contact: {
     github: "GitHub",
@@ -153,6 +157,10 @@ const sr: typeof en = {
     prev: "Prethodni projekti",
     next: "Sledeći projekti",
     noMedia: "Snimci ekrana uskoro.",
+    demoLogin: "Demo prijava",
+    loginOnRequest: "Podatke za prijavu dobijaš na zahtev, preko Kontakta.",
+    copy: "Kopiraj",
+    copied: "Kopirano",
   },
   contact: {
     github: "GitHub",

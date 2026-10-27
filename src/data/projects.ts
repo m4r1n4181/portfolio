@@ -32,6 +32,10 @@ export type Project = {
   stack: string[];
   links: { github?: string; demo?: string; video?: string };
   demoNote?: Localized; // npr. da se besplatni hosting budi minut
+  // Javni demo nalozi. Prikazuju se ljudima na stranici, a AI ih NE dobija.
+  // Objavljuj samo naloge koji ne mogu ništa da pokvare ni da šalju e-mailove.
+  demoLogins?: { role: Localized; email: string; password: string }[];
+  loginOnRequest?: boolean; // demo traži prijavu, a podaci se dobijaju preko Kontakta
 };
 
 export const projects: Project[] = [
@@ -421,7 +425,91 @@ export const projects: Project[] = [
       { value: "MFA + OTP", label: { en: "staff and patient sign-in", sr: "prijava osoblja i pacijenata" } },
       { value: "CI", label: { en: "typecheck, build, tests on every push", sr: "tipovi, build, testovi na svaki push" } },
     ],
-    media: [],
+    cover: {
+      src: "/projects/endokrina/doctor-list.webp",
+      width: 800,
+      height: 500,
+      alt: { en: "Doctor's list of appointments with preparation status", sr: "Lekarov spisak termina sa statusom pripreme" },
+    },
+    media: [
+      {
+        type: "image",
+        src: "/projects/endokrina/doctor-list.webp",
+        width: 800,
+        height: 500,
+        alt: { en: "Doctor's list of appointments", sr: "Lekarov spisak termina" },
+        caption: {
+          en: "The doctor's daily overview: each appointment shows whether the questionnaire is locked and whether lab results are uploaded, missing or pending. All patients are fictional demo data.",
+          sr: "Lekarov dnevni pregled: za svaki termin vidi se da li je upitnik zaključan i da li su nalazi poslati, nedostaju ili se čekaju. Svi pacijenti su izmišljeni demo podaci.",
+        },
+      },
+      {
+        type: "image",
+        src: "/projects/endokrina/summary.webp",
+        width: 800,
+        height: 500,
+        alt: { en: "Pre-visit summary generated from the patient's answers", sr: "Sažetak pre pregleda napravljen iz odgovora pacijenta" },
+        caption: {
+          en: "A deterministic, template-based summary the doctor can copy into the report. It says clearly that the data is patient-reported, and it flags missing answers instead of guessing.",
+          sr: "Deterministički sažetak iz šablona koji lekar može da kopira u nalaz. Jasno piše da su podaci od pacijenta, a odgovore koji nedostaju označava umesto da ih pogađa.",
+        },
+      },
+      {
+        type: "image",
+        src: "/projects/endokrina/answers.webp",
+        width: 800,
+        height: 500,
+        alt: { en: "Patient's questionnaire answers, read-only", sr: "Odgovori pacijenta iz upitnika, samo za čitanje" },
+        caption: {
+          en: "Answers grouped by questionnaire section, read-only, with unanswered questions shown so the doctor sees what is missing.",
+          sr: "Odgovori po sekcijama upitnika, samo za čitanje, uz prikaz pitanja bez odgovora da lekar vidi šta nedostaje.",
+        },
+      },
+      {
+        type: "image",
+        src: "/projects/endokrina/documents.webp",
+        width: 800,
+        height: 500,
+        alt: { en: "Uploaded lab result", sr: "Poslat laboratorijski nalaz" },
+        caption: {
+          en: "Lab results the patient uploaded, stored encrypted on S3, available to the doctor only to view or download.",
+          sr: "Nalazi koje je pacijent poslao, enkriptovani na S3, dostupni lekaru samo za pregled i preuzimanje.",
+        },
+      },
+      {
+        type: "image",
+        src: "/projects/endokrina/history.webp",
+        width: 800,
+        height: 500,
+        alt: { en: "Patient history with previous visits", sr: "Istorija pacijenta sa prethodnim pregledima" },
+        caption: {
+          en: "Patient history: basic details and previous visits, each with its answers and documents.",
+          sr: "Istorija pacijenta: osnovni podaci i prethodni pregledi, svaki sa svojim odgovorima i dokumentima.",
+        },
+      },
+      {
+        type: "image",
+        src: "/projects/endokrina/admin-appointment.webp",
+        width: 800,
+        height: 486,
+        alt: { en: "Admin view of an appointment without clinical content", sr: "Administratorski prikaz termina bez kliničkog sadržaja" },
+        caption: {
+          en: "The same appointment seen by clinic admin: contact and preparation progress only. Answers and documents are blocked on the server (HTTP 403), not just hidden in the UI.",
+          sr: "Isti termin iz ugla administracije: samo kontakt i tok pripreme. Odgovori i dokumenti su blokirani na serveru (HTTP 403), ne samo sakriveni u interfejsu.",
+        },
+      },
+      {
+        type: "image",
+        src: "/projects/endokrina/admin-invitation.webp",
+        width: 800,
+        height: 500,
+        alt: { en: "Form for a new patient invitation", sr: "Forma za novu pozivnicu pacijentu" },
+        caption: {
+          en: "Reception creates an invitation; the patient gets a secure link and verifies with date of birth and an e-mail code.",
+          sr: "Recepcija pravi pozivnicu; pacijent dobija siguran link i potvrđuje se datumom rođenja i kodom na e-mail.",
+        },
+      },
+    ],
     problem: {
       en: "Thyroid appointments lose time collecting history and lab results. The clinic needed patients to prepare beforehand, without reception staff ever seeing clinical data.",
       sr: "Na pregledima štitne žlezde gubi se vreme na prikupljanje istorije i nalaza. Klinici je trebalo da se pacijenti pripreme unapred, a da recepcija nikad ne vidi kliničke podatke.",
@@ -453,7 +541,16 @@ export const projects: Project[] = [
     learned: [],
     limitations: [],
     stack: ["TypeScript", "Express", "React", "PostgreSQL", "Drizzle", "Zod", "AWS S3", "Azure", "Docker", "Vitest"],
-    links: { github: "https://github.com/m4r1n4181/endokrina-app" }, // TODO: dodaj demo: "https://..." (Azure)
+    links: {
+      github: "https://github.com/m4r1n4181/endokrina-app",
+      demo: "https://thyroid-demo-app.gentlestone-4be7f854.swedencentral.azurecontainerapps.io/",
+    },
+    demoNote: {
+      en: "Demo with fictional patients and lab results.",
+      sr: "Demo sa izmišljenim pacijentima i nalazima.",
+    },
+    // Demo traži prijavu; ispod linka piše "podatke za prijavu dobijaš na zahtev, preko Kontakta".
+    loginOnRequest: true,
   },
   {
     // Sakriveno: validaciona tačnost u notebooku je ~11,8% (ispod nasumičnih 14% za 7 klasa),
